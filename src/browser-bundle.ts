@@ -36,9 +36,11 @@ export const browserBundle = async (code: string, options?: Options) => {
     });
     importCode += convertedCode + "\n"
   })
+  // outputTextからimport文を削除する
+  const finalOutputText = outputText.replace(importRegex, "")
 
 
   return {
-    code: importCode + outputText,
+    code: importCode + finalOutputText,
   }
 }

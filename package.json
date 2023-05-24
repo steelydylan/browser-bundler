@@ -2,7 +2,7 @@
   "name": "browser-bundler",
   "main": "./lib/browser-bundle.js",
   "types": "./lib/browser-bundle.d.ts",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
