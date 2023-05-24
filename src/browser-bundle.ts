@@ -1,4 +1,5 @@
 import { CompilerOptions, JsxEmit, ModuleKind, ScriptTarget, transpileModule } from 'typescript';
+import replaceAsync from "string-replace-async";
 
 const defaultCompilerOptions: CompilerOptions = {
   jsx: JsxEmit.React,
@@ -16,17 +17,20 @@ window.process = {
 
 type Options = {
   compilerOptions?: CompilerOptions;
+  files?: Record<string, string>
 }
 
-export const browserBundle = async (code: string, options?: Options) => {
+const transformCode = async (code: string, options?: Options): Promise<{ code: string }> => {
   const { compilerOptions } = options || {}
+  const { files } = options || {}
   const opt = { ...defaultCompilerOptions, ...compilerOptions }
   const { outputText } = transpileModule(code, {
     compilerOptions: opt,
   });
 
-  //import文だけを最初に抽出する
-  const importRegex = /import\s+.*\s+from\s+['"].*['"];?/g
+  const importAllRegex = /import\s+.*\s+from\s+['"].*['"];?/g
+  //import文だけを最初に抽出する。ただし、相対パスを含むimport文は対象外とする
+  const importRegex = /import\s+.*\s+from\s+['"][^'.].*['"];?/g
   const importStatements = code.match(importRegex)
   // import文をesm.shから読み込むように変換する
   let importCode = ""
@@ -37,10 +41,37 @@ export const browserBundle = async (code: string, options?: Options) => {
     importCode += convertedCode + "\n"
   })
   // outputTextからimport文を削除する
-  const finalOutputText = outputText.replace(importRegex, "")
+  const finalOutputText = outputText.replace(importAllRegex, "")
 
+  // 相対パスのimport文をfilesから読み込みblobURLに変換する
+  if (files) {
+    const relativeImportRegex = /import\s+.*\s+from\s+['"][.].*['"];?/g
+    const relativeImportStatements = code.match(relativeImportRegex)
+    if (relativeImportStatements) {
+      await Promise.all(relativeImportStatements.map(async (relativeImportStatement) => {
+        const convertedCode = await replaceAsync(relativeImportStatement, /from\s*['"]([^'"]*)['"]/g, async (_match, p1) => {
+          const file = files[p1]
+          const { code: converted } = await transformCode(file, options)
+          if (file) {
+            const blob = new Blob([converted], { type: 'text/javascript' })
+            const blobURL = URL.createObjectURL(blob)
+            return `from '${blobURL}'`;
+          } else {
+            return `from '${p1}'`;
+          }
+        });
+        importCode += convertedCode + "\n"
+      }))
+    }
+  }
 
   return {
     code: importCode + finalOutputText,
   }
+}
+
+export const browserBundle = async (code: string, options?: Options) => {
+  const finalCode = await transformCode(code, options)
+
+  return finalCode
 }
