@@ -5,13 +5,13 @@ const iframe = document.querySelector("#result") as HTMLIFrameElement
 
 if (textarea && iframe) {
   textarea.value = `import React from "react";
-    import ReactDOM from "react-dom";
+import ReactDOM from "react-dom";
 
-    const App = () {
-      return (<div>Hellow World</div>
-    }
+const App = () {
+  return (<div>Hellow World</div>
+}
 
-    ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));
   `;
   textarea.addEventListener("input", async () => {
     const code = textarea.value
