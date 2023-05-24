@@ -31,7 +31,7 @@ export const browserBundle = async (code: string, options?: Options) => {
   // import文をesm.shから読み込むように変換する
   let importCode = ""
   importStatements?.forEach((importStatement) => {
-    const convertedCode = importStatement.replace(/from\s*['"]([^'"]*)['"]/g, function(match, p1) {
+    const convertedCode = importStatement.replace(/from\s*['"]([^'"]*)['"]/g, function(_match, p1) {
       return `from 'https://esm.sh/${p1}'`;
     });
     importCode += convertedCode + "\n"
