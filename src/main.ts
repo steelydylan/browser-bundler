@@ -8,7 +8,7 @@ if (textarea && iframe) {
 import ReactDOM from "react-dom";
 
 const App = () {
-  return (<div>Hellow World</div>
+  return (<div>Hello World</div>
 }
 
 ReactDOM.render(<App />, document.getElementById("root"));

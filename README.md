@@ -2,6 +2,10 @@
 
 Bundle React and TypeScript online without Node.js
 
+## Screenshots
+
+![](./screenshot.png)
+
 ## Install
 
 ```
@@ -11,22 +15,37 @@ npm install browser-bundler
 ## Example
 
 ```js
-import { browserBundle } from "./browser-bundle";
+import { browserBundle } from "browser-bundle";
 
 const textarea = document.querySelector("#textarea") as HTMLTextAreaElement
-const result = document.querySelector("#result") as HTMLTextAreaElement
+const iframe = document.querySelector("#result") as HTMLIFrameElement
 
-if (textarea && result) {
+if (textarea && iframe) {
   textarea.value = `import React from "react";
-    export default App() {
-      return (<div>Hellow World</div>
-    }
-  `;
-  textarea.addEventListener("input", async () => {
-    const code = textarea.value
-    const { code: bundleCode } = await browserBundle(code)
-    result.value = `${bundleCode}`
-  })
-  textarea.dispatchEvent(new Event("input"))
+import ReactDOM from "react-dom";
+
+const App = () {
+  return (<div>Hello World</div>
 }
+
+ReactDOM.render(<App />, document.getElementById("root"));`;
+
+textarea.addEventListener("input", async () => {
+  const code = textarea.value
+  const { code: bundleCode } = await browserBundle(code)
+  iframe.srcdoc = `
+    <html>
+      <head>
+        <meta charset="utf-8">
+      </head>
+      <body>
+        <div id="root"></div>
+        <script type="module">
+        ${bundleCode}
+        </script>
+      </body>
+    </html>
+  `
+})
+textarea.dispatchEvent(new Event("input"))
 ```
