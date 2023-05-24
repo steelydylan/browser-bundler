@@ -49,3 +49,27 @@ textarea.addEventListener("input", async () => {
 })
 textarea.dispatchEvent(new Event("input"))
 ```
+
+
+## Relative Path
+
+```js
+import { browserBundle } from "browser-bundle";
+
+const code = `
+import React from "react";
+import { Hello } from "./hello.tsx";
+
+export const App = () => {
+  return (<div><Hello /></div>)
+}`
+
+const result = await browserBundle(code, {
+  files: {
+    "./hello.tsx": `import React from "react";
+    export const Hello = () => {
+      return (<div>Hello World</div>)
+    }`,
+  }
+})
+```
