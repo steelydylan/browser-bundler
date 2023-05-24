@@ -58,11 +58,15 @@ import { browserBundle } from "browser-bundle";
 
 const code = `
 import React from "react";
+import ReactDOM from "react-dom";
 import { Hello } from "./hello.tsx";
 
-export const App = () => {
+const App = () => {
   return (<div><Hello /></div>)
-}`
+}
+
+ReactDOM.render(<App />, document.getElementById("root"));
+`
 
 const result = await browserBundle(code, {
   files: {
