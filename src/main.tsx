@@ -101,8 +101,8 @@ const App = () => {
             </li>
           </ul>
         </div>
-        {tab === "main" && (<textarea className="bg-gray-50 h-full p-2 w-full" onChange={handleChange} value={main}></textarea>)}
-        {tab === "hello" && (<textarea className="bg-gray-50 h-full p-2 w-full" onChange={handleHelloChange} value={hello}></textarea>)}
+        {tab === "main" && (<textarea className="bg-gray-50 h-full p-2 w-full" onChange={handleChange} defaultValue={main}></textarea>)}
+        {tab === "hello" && (<textarea className="bg-gray-50 h-full p-2 w-full" onChange={handleHelloChange} defaultValue={hello}></textarea>)}
       </div>
       <div className="flex-1 h-full w-full">
         <p className="h-14 text-center font-bold text-lg">プレビュー結果</p>
