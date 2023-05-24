@@ -9,6 +9,7 @@
     "moduleResolution": "Node",
     "strict": true,
     "outDir": "./lib",
+    "jsx": "react",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "esModuleInterop": true,

@@ -6,13 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Vite + TS</title>
+    <style>
+      #root {
+        height: 100vh;
+      }
+    </style>
   </head>
   <body class="h-screen">
-    <div class="flex gap-5 p-5 h-full">
-      <textarea id="textarea" class="flex-1 bg-gray-50 h-full p-2"></textarea>
-      <iframe id="result" class="flex-1 bg-gray-50 h-full p-2"></iframe>
-    </div>
-    <script type="module" src="/src/main.ts"></script>
+
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
 
