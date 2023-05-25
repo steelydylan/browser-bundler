@@ -2,6 +2,10 @@
 
 Bundle React and TypeScript online without Node.js
 
+## Playground
+
+https://mosya.dev/tools/react-ts
+
 ## Screenshots
 
 ![](./screenshot.png)
@@ -54,7 +58,7 @@ textarea.dispatchEvent(new Event("input"))
 ## Relative Path
 
 ```js
-import { browserBundle } from "browser-bundle";
+import { browserBundle } from "browser-bundler";
 
 const code = `
 import React from "react";
