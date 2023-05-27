@@ -20,7 +20,7 @@ type Options = {
   files?: Record<string, string>
 }
 
-const transformCode = async (code: string, options?: Options): Promise<{ code: string }> => {
+const transformCode = async (code: string, fileMapping: Map<string, string>, options?: Options): Promise<{ code: string }> => {
   const { compilerOptions } = options || {}
   const { files } = options || {}
   const opt = { ...defaultCompilerOptions, ...compilerOptions }
@@ -51,10 +51,14 @@ const transformCode = async (code: string, options?: Options): Promise<{ code: s
       await Promise.all(relativeImportStatements.map(async (relativeImportStatement) => {
         const convertedCode = await replaceAsync(relativeImportStatement, /from\s*['"]([^'"]*)['"]/g, async (_match, p1) => {
           const file = files[p1]
-          const { code: converted } = await transformCode(file, options)
           if (file) {
+            if (fileMapping.has(p1)) {
+              return `from '${fileMapping.get(p1)}'`;
+            }
+            const { code: converted } = await transformCode(file, fileMapping, options)
             const blob = new Blob([converted], { type: 'text/javascript' })
             const blobURL = URL.createObjectURL(blob)
+            fileMapping.set(p1, blobURL)
             return `from '${blobURL}'`;
           } else {
             return `from '${p1}'`;
@@ -71,7 +75,9 @@ const transformCode = async (code: string, options?: Options): Promise<{ code: s
 }
 
 export const browserBundle = async (code: string, options?: Options) => {
-  const finalCode = await transformCode(code, options)
+  // importのキャッシュを保持する
+  const fileMapping = new Map<string, string>()
+  const finalCode = await transformCode(code, fileMapping, options)
 
   return finalCode
 }

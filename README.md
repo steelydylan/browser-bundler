@@ -19,7 +19,7 @@ npm install browser-bundler
 ## Example
 
 ```js
-import { browserBundle } from "browser-bundle";
+import { browserBundle } from "browser-bundler";
 
 const textarea = document.querySelector("#textarea") as HTMLTextAreaElement
 const iframe = document.querySelector("#result") as HTMLIFrameElement
