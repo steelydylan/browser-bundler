@@ -20,6 +20,29 @@ type Options = {
   files?: Record<string, string>
 }
 
+const getMatchedFile = (path: string, files: Record<string, string>) => {
+  const keys = Object.keys(files)
+  const matchedKey = keys.find((key) => {
+    if (key === path) {
+      return true
+    }
+    if (key.endsWith(".ts") && key.replace(".ts", "") === path) {
+      return true
+    }
+    if (key.endsWith(".tsx") && key.replace(".tsx", "") === path) {
+      return true
+    }
+    if (key.endsWith(".js") && key.replace(".js", "") === path) {
+      return true
+    }
+    if (key.endsWith(".jsx") && key.replace(".jsx", "") === path) {
+      return true
+    }
+    return false
+  })
+  return matchedKey ? files[matchedKey] : null
+}
+
 const transformCode = async (code: string, fileMapping: Map<string, string>, options?: Options): Promise<{ code: string }> => {
   const { compilerOptions } = options || {}
   const { files } = options || {}
@@ -50,7 +73,7 @@ const transformCode = async (code: string, fileMapping: Map<string, string>, opt
     if (relativeImportStatements) {
       await Promise.all(relativeImportStatements.map(async (relativeImportStatement) => {
         const convertedCode = await replaceAsync(relativeImportStatement, /from\s*['"]([^'"]*)['"]/g, async (_match, p1) => {
-          const file = files[p1]
+          const file = getMatchedFile(p1, files)
           if (file) {
             if (fileMapping.has(p1)) {
               return `from '${fileMapping.get(p1)}'`;

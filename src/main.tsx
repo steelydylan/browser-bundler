@@ -47,7 +47,7 @@ const App = () => {
     const value = e.target.value;
     const result = await browserBundle(value, {
       files: {
-        "./hello": hello,
+        "./hello.tsx": hello,
       }
     });
     setMain(value);
