@@ -22,6 +22,7 @@ dist-ssr
 *.sln
 *.sw?
 public
-lib
-yarn.lock
 .yarn/*
+
+dist
+coverage
