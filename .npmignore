@@ -1,5 +1,7 @@
+docs/*
 src/*
-dist/*
-.github/*
 utility/*
 index.html
+screenshot.png
+tsconfig.json
+vite.config.ts
