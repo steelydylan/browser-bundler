@@ -53,6 +53,10 @@ const App = () => {
       files: {
         "./hello.tsx": script["hello.tsx"],
       },
+      importMap: {
+        "react": "https://cdn.skypack.dev/react",
+        "react-dom": "https://cdn.skypack.dev/react-dom",
+      }
     });
     setSrcDoc(buildSrcDoc(script["index.html"], code));
   }, [script]);

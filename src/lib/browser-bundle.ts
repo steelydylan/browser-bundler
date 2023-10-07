@@ -3,6 +3,7 @@ import ts from "typescript";
 export interface Options {
   compilerOptions?: ts.CompilerOptions;
   files?: Record<string, string>;
+  importMap?: Record<string, string>;
 }
 
 export function getMatchedFile(path: string, files: Record<string, string>) {
@@ -32,8 +33,11 @@ export function resolvePackage(
       }
     }
   } else {
-    // import文をesm.shから読み込むように変換する
-    return `https://esm.sh/${packageName}`;
+    if (options?.importMap?.[packageName]) {
+      return options.importMap[packageName];
+    } else {
+      return `https://esm.sh/${packageName}`;
+    }
   }
   return packageName;
 }
