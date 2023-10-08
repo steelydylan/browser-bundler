@@ -10,13 +10,18 @@ import { Hello } from "./hello";
 render(<Hello />, document.getElementById("root"));
 `;
 
-const defaultHello = `import React from "react";
+const defaultHello = `import React, { lazy, Suspense } from "react";
+import "react-calendar/dist/Calendar.css";
+const LazyCalendar = lazy(() => import("react-calendar"));
 
 export const Hello = () => {
   return (
     <div className="text-center">
       <h1 className="text-2xl font-bold">Hello, World!</h1>
       <p className="text-gray-500">This is a sample page.</p>
+      <Suspense fallback={<div>Loading...</div>}>
+        <LazyCalendar />
+      </Suspense>
     </div>
   )
 }
@@ -53,10 +58,10 @@ const App = () => {
       files: {
         "./hello.tsx": script["hello.tsx"],
       },
-      importMap: {
-        "react": "https://cdn.skypack.dev/react",
-        "react-dom": "https://cdn.skypack.dev/react-dom",
-      }
+      // importMap: {
+      //   "react": "https://cdn.skypack.dev/react",
+      //   "react-dom": "https://cdn.skypack.dev/react-dom",
+      // }
     });
     setSrcDoc(buildSrcDoc(script["index.html"], code));
   }, [script]);

@@ -58,7 +58,15 @@ export function transformCode(
       ...options.compilerOptions,
     },
   });
-  return outputText.replace(
+  return outputText
+    .replace(/import\(['"](.+)['"]\)/g, (_, packageName: string) => {
+      return `import('${resolvePackage(
+        packageName,
+        options,
+        fileMapping
+      )}')`;
+    })
+    .replace(
     /(\/\/\s*)?(import\s+)(.*\s+from\s+)?['"](.*)['"];?/g,
     (
       raw,
@@ -74,13 +82,11 @@ export function transformCode(
         fileMapping
       );
       if (resolvedPackageName.endsWith(".css")) {
-        return `(function () {
-  var css=document.createElement("link");
-  css.setAttribute("rel","stylesheet");
-  css.setAttribute("type","text/css");
-  css.setAttribute("href","${resolvedPackageName}");
-  document.getElementsByTagName("head")[0].appendChild(css);
-}());`;
+        const cssName = resolvedPackageName.replace(/[\.\/:-]/g, "").replace(/https?/, "");
+        return `import ${cssName} from '${resolvedPackageName}' assert { type: "css" };
+        
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ${cssName}];
+        `;
       } else {
         return `${importKey}${fromKey}'${resolvedPackageName}';`;
       }
