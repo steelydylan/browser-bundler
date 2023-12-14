@@ -848,8 +848,10 @@ __metadata:
     "@vitejs/plugin-react": ^4.0.4
     "@vitest/coverage-v8": ^0.34.1
     clsx: ^2.0.0
+    esbuild-wasm: ^0.19.9
     react: ^18.2.0
     react-dom: ^18.2.0
+    string-replace-async: ^3.0.2
     typescript: ^5.1.6
     vite: ^4.4.9
     vitest: ^0.34.1
@@ -1123,6 +1125,15 @@ __metadata:
   version: 2.0.3
   resolution: "err-code@npm:2.0.3"
   checksum: 8b7b1be20d2de12d2255c0bc2ca638b7af5171142693299416e6a9339bd7d88fc8d7707d913d78e0993176005405a236b066b45666b27b797252c771156ace54
+  languageName: node
+  linkType: hard
+
+"esbuild-wasm@npm:^0.19.9":
+  version: 0.19.9
+  resolution: "esbuild-wasm@npm:0.19.9"
+  bin:
+    esbuild: bin/esbuild
+  checksum: c08786aee7420cc5cf0e7f40f31d9a9d3cd326ee44bf0f6885500565c15f58cf26b85de2905b1635a77a0d51b9a0637d87ee3c09bf0c4206fac36d52f58a982f
   languageName: node
   linkType: hard
 
@@ -2214,6 +2225,13 @@ __metadata:
   version: 3.3.3
   resolution: "std-env@npm:3.3.3"
   checksum: 6665f6d8bd63aae432d3eb9abbd7322847ad0d902603e6dce1e8051b4f42ceeb4f7f96a4faf70bb05ce65ceee2dc982502b701575c8a58b1bfad29f3dbb19f81
+  languageName: node
+  linkType: hard
+
+"string-replace-async@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "string-replace-async@npm:3.0.2"
+  checksum: f7f239d255fa4246ddd376ebd9d47b9b82070e5f917bf35996c6e48f6509cf77a8bca330b60c120c473a76a69bf78b9e15c6dd4e417c304a22ebddabb8a2e5d8
   languageName: node
   linkType: hard
 

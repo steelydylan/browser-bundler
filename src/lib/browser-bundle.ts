@@ -1,7 +1,8 @@
-import ts from "typescript";
+import * as esbuild from "esbuild-wasm";
+import replaceAsync from "string-replace-async";
 
 export interface Options {
-  compilerOptions?: ts.CompilerOptions;
+  compilerOptions?: esbuild.TsconfigRaw["compilerOptions"];
   files?: Record<string, string>;
   importMap?: Record<string, string>;
 }
@@ -12,7 +13,7 @@ export function getMatchedFile(path: string, files: Record<string, string>) {
     .find((e) => !!e);
 }
 
-export function resolvePackage(
+export async function resolvePackage(
   packageName: string,
   options: Options,
   fileMapping: Map<string, string>
@@ -25,7 +26,7 @@ export function resolvePackage(
         if (fileMapping.has(packageName)) {
           return fileMapping.get(packageName) as string;
         }
-        const code = transformCode(file, options, fileMapping);
+        const code = await transformCode(file, options, fileMapping);
         const blob = new Blob([code], { type: "text/javascript" });
         const blobUrl = URL.createObjectURL(blob);
         fileMapping.set(packageName, blobUrl);
@@ -42,33 +43,34 @@ export function resolvePackage(
   return packageName;
 }
 
-export function transformCode(
+export async function transformCode(
   code: string,
   options: Options,
   fileMapping = new Map<string, string>()
-): string {
-  const defaultCompilerOptions: ts.CompilerOptions = {
-    jsx: ts.JsxEmit.React,
-    target: ts.ScriptTarget.ESNext,
-    module: ts.ModuleKind.ESNext,
-  };
-  const { outputText } = ts.transpileModule(code, {
-    compilerOptions: {
-      ...defaultCompilerOptions,
-      ...options.compilerOptions,
+): Promise<string> {
+  const compilerOptions = {
+    jsx: "react",
+    target: "esnext",
+    module: "esnext",
+  } as const;
+  const { code: outputText } = await esbuild.transform(code, {
+    loader: "tsx",
+    tsconfigRaw: {
+      compilerOptions: {
+        ...compilerOptions,
+        ...options,
+      },
     },
   });
-  return outputText
-    .replace(/import\(['"](.+)['"]\)/g, (_, packageName: string) => {
-      return `import('${resolvePackage(
+  const fixedText = await replaceAsync(outputText, /import\(['"](.+)['"]\)/g, async (_, packageName: string) => {
+      return `import('${await resolvePackage(
         packageName,
         options,
         fileMapping
       )}')`;
     })
-    .replace(
-    /(\/\/\s*)?(import\s+)(.*\s+from\s+)?['"](.*)['"];?/g,
-    (
+  return await replaceAsync(fixedText, /(\/\/\s*)?(import\s+)(.*\s+from\s+)?['"](.*)['"];?/g,
+    async (
       raw,
       commentKey: string = "",
       importKey: string,
@@ -76,7 +78,7 @@ export function transformCode(
       packageName: string
     ) => {
       if (commentKey) return raw;
-      const resolvedPackageName = resolvePackage(
+      const resolvedPackageName = await resolvePackage(
         packageName,
         options,
         fileMapping
@@ -94,14 +96,21 @@ export function transformCode(
   );
 }
 
-export function browserBundle(code: string, options: Options = {}) {
-  if (typeof window !== "undefined") {
-    window.process = {
-      // @ts-ignore typescriptのpnpを無効化する
-      versions: {
-        pnp: "undefined",
-      },
-    };
+let initialized = false;
+
+export async function browserBundle(code: string, options: Options = {}) {
+  if (!initialized) {
+    await esbuild.initialize({
+      // wasmModule: wasm,
+      worker: false,
+      wasmURL: "https://esm.sh/esbuild-wasm@0.19.9/esbuild.wasm",
+    });
+    initialized = true;
   }
-  return { code: transformCode(code, options) };
+  try {
+    return { code: await transformCode(code, options) };
+  } catch (e) {
+    console.error(e);
+    return { error: e };
+  }
 }

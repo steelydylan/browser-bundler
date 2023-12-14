@@ -54,7 +54,7 @@ const App = () => {
   const [srcDoc, setSrcDoc] = useState("");
 
   useEffect(() => {
-    const { code } = browserBundle(script["main.tsx"], {
+    browserBundle(script["main.tsx"], {
       files: {
         "./hello.tsx": script["hello.tsx"],
       },
@@ -62,8 +62,10 @@ const App = () => {
       //   "react": "https://cdn.skypack.dev/react",
       //   "react-dom": "https://cdn.skypack.dev/react-dom",
       // }
+    }).then(({ code }) => {
+      console.log(code)
+      setSrcDoc(buildSrcDoc(script["index.html"], code));
     });
-    setSrcDoc(buildSrcDoc(script["index.html"], code));
   }, [script]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
