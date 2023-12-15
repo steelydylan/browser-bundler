@@ -26,6 +26,12 @@ export async function resolvePackage(
         if (fileMapping.has(packageName)) {
           return fileMapping.get(packageName) as string;
         }
+        if (packageName.includes(".css")) {
+          const blob = new Blob([file], { type: "text/css" });
+          const blobUrl = URL.createObjectURL(blob);
+          fileMapping.set(packageName, blobUrl);
+          return blobUrl;
+        }
         const code = await transformCode(file, options, fileMapping);
         const blob = new Blob([code], { type: "text/javascript" });
         const blobUrl = URL.createObjectURL(blob);
@@ -99,7 +105,7 @@ export async function transformCode(
 let initialized = false;
 
 export async function browserBundle(code: string, options: Options = {}) {
-  if (!initialized) {
+  if (!initialized && typeof window !== "undefined") {
     await esbuild.initialize({
       // wasmModule: wasm,
       worker: false,

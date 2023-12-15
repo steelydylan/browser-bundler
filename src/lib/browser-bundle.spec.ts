@@ -6,49 +6,49 @@ import {
 } from "./browser-bundle";
 
 describe("getMatchedFile", () => {
-  test("should work", () => {
+  test("should work", async () => {
     const ret = getMatchedFile("test", { test: "test code" });
     expect(ret).toEqual("test code");
   });
 
-  test("should work with ts", () => {
+  test("should work with ts", async () => {
     const ret = getMatchedFile("test", { "test.ts": "test code" });
     expect(ret).toEqual("test code");
   });
 
-  test("should work with tsx", () => {
+  test("should work with tsx", async () => {
     const ret = getMatchedFile("test", { "test.tsx": "test code" });
     expect(ret).toEqual("test code");
   });
 
-  test("should work with js", () => {
+  test("should work with js", async () => {
     const ret = getMatchedFile("test", { "test.js": "test code" });
     expect(ret).toEqual("test code");
   });
 
-  test("should work with jsx", () => {
+  test("should work with jsx", async () => {
     const ret = getMatchedFile("test", { "test.jsx": "test code" });
     expect(ret).toEqual("test code");
   });
 
-  test("should work with empty", () => {
+  test("should work with empty", async () => {
     const ret = getMatchedFile("test", {});
     expect(ret).toBeUndefined();
   });
 });
 
-describe("resolvePackage", () => {
-  beforeAll(() => {
+describe("resolvePackage",() => {
+  beforeAll(async () => {
     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:nodedata:xxx");
   });
 
-  test("external library", () => {
-    const ret = resolvePackage("react", {}, new Map<string, string>());
+  test("external library", async () => {
+    const ret = await resolvePackage("react", {}, new Map<string, string>());
     expect(ret).toEqual("https://esm.sh/react");
   });
 
-  test("external css library", () => {
-    const ret = resolvePackage(
+  test("external css library", async () => {
+    const ret = await resolvePackage(
       "@radix-ui/themes/styles.css",
       {},
       new Map<string, string>()
@@ -56,36 +56,48 @@ describe("resolvePackage", () => {
     expect(ret).toEqual("https://esm.sh/@radix-ui/themes/styles.css");
   });
 
-  test("internal library", () => {
-    const ret = resolvePackage(
+  test("internal library", async () => {
+    const ret = await resolvePackage(
       "./test",
       {
-        files: { "./test": "test code" },
+        files: { "./test": "const code = 2" },
       },
       new Map<string, string>()
     );
     expect(ret).toEqual("blob:nodedata:xxx");
   });
 
-  test("internal library with extension", () => {
-    const ret = resolvePackage(
+  test("internal library with extension", async () => {
+    const ret = await resolvePackage(
       "./test",
       {
-        files: { "./test.ts": "test code" },
+        files: { "./test.ts": "const hoge = 2" },
+      },
+      new Map<string, string>()
+    );
+    console.log(ret)
+    expect(ret).toEqual("blob:nodedata:xxx");
+  });
+
+  test("internal css library", async () => {
+    const ret = await resolvePackage(
+      "./test.css",
+      {
+        files: { "./test.css": "test code" },
       },
       new Map<string, string>()
     );
     expect(ret).toEqual("blob:nodedata:xxx");
   });
 
-  test("no match internal library", () => {
-    const ret = resolvePackage("./test", {}, new Map<string, string>());
+  test("no match internal library", async () => {
+    const ret = await resolvePackage("./test", {}, new Map<string, string>());
     expect(ret).toEqual("./test");
   });
 });
 
-describe("browserBundle", () => {
-  beforeAll(() => {
+describe("browserBundle",() => {
+  beforeAll(async () => {
     vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:nodedata:xxx");
   });
 
@@ -105,7 +117,7 @@ export function App() {
     );
 }
 `;
-    const res = browserBundle(code);
+    const res = await browserBundle(code);
     expect(res).toMatchSnapshot();
   });
 
@@ -121,7 +133,7 @@ render(<Hello />, document.getElementById("root"));
     const defaultHello = `
 import React from "react";
 
-export const Hello = () => {
+export const Hello = async () => {
   return (
     <div className="text-center">
       <h1 className="text-2xl font-bold">Hello, World!</h1>
@@ -131,7 +143,7 @@ export const Hello = () => {
 }
 `;
 
-    const res = browserBundle(defaultCode, {
+    const res = await browserBundle(defaultCode, {
       files: {
         "./hello.tsx": defaultHello,
       },

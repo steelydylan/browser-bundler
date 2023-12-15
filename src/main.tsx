@@ -6,6 +6,7 @@ import { browserBundle } from "./lib/browser-bundle";
 const defaultMain = `import React from "react";
 import { render } from "react-dom";
 import { Hello } from "./hello";
+import "./style.css";
 
 render(<Hello />, document.getElementById("root"));
 `;
@@ -37,6 +38,12 @@ const defaultHtml = `<html>
 </html>
 `;
 
+const styleCSS = `
+ body {
+  color: red;
+ }
+`
+
 const buildSrcDoc = (html: string, code: string) => {
   return html.replace(
     "</body>",
@@ -57,13 +64,13 @@ const App = () => {
     browserBundle(script["main.tsx"], {
       files: {
         "./hello.tsx": script["hello.tsx"],
+        "./style.css": styleCSS,
       },
       // importMap: {
       //   "react": "https://cdn.skypack.dev/react",
       //   "react-dom": "https://cdn.skypack.dev/react-dom",
       // }
     }).then(({ code }) => {
-      console.log(code)
       setSrcDoc(buildSrcDoc(script["index.html"], code));
     });
   }, [script]);
