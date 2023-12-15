@@ -55,7 +55,7 @@ export async function transformCode(
   fileMapping = new Map<string, string>()
 ): Promise<string> {
   const compilerOptions = {
-    jsx: "react",
+    jsx: "react-jsx",
     target: "esnext",
     module: "esnext",
   } as const;

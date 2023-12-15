@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import clsx from "clsx";
 import { browserBundle } from "./lib/browser-bundle";
 
-const defaultMain = `import React from "react";
+const defaultMain = `
 import { render } from "react-dom";
 import { Hello } from "./hello";
 import "./style.css";
@@ -11,7 +11,7 @@ import "./style.css";
 render(<Hello />, document.getElementById("root"));
 `;
 
-const defaultHello = `import React, { lazy, Suspense } from "react";
+const defaultHello = `import { lazy, Suspense } from "react";
 import "react-calendar/dist/Calendar.css";
 const LazyCalendar = lazy(() => import("react-calendar"));
 
