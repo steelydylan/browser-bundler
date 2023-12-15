@@ -102,16 +102,22 @@ export async function transformCode(
   );
 }
 
+let initializePromise: Promise<void> | null = null;
+
+async function initialize() {
+  if (!initializePromise) {
+    initializePromise = esbuild.initialize({
+      // wasmModule: wasm,
+      worker: false,
+      wasmURL: "https://esm.sh/esbuild-wasm@latest",
+    });
+  }
+  return initializePromise;
+}
+
 export async function browserBundle(code: string, options: Options = {}) {
   if (typeof window !== "undefined") {
-    try {
-      await esbuild.initialize({
-        // wasmModule: wasm,
-        worker: false,
-        wasmURL: "https://esm.sh/esbuild-wasm@0.19.9/esbuild.wasm",
-      });
-    } catch (e) {
-    }
+    await initialize();
   }
   try {
     return { code: await transformCode(code, options) };
