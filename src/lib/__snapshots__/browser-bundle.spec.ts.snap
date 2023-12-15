@@ -2,14 +2,17 @@
 
 exports[`browserBundle > should work 1`] = `
 {
-  "code": "import React from 'https://esm.sh/react';
+  "code": "import { jsx, jsxs } from 'https://esm.sh/react/jsx-runtime';
 import { Flex, Text, Button } from 'https://esm.sh/@radix-ui/themes';
-import esmsh@radixuithemesstylescss from 'https://esm.sh/@radix-ui/themes/styles.css' assert { type: \\"css\\" };
+import @radixuithemesstylescss from 'https://esm.sh/@radix-ui/themes/styles.css' assert { type: \\"css\\" };
         
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, esmsh@radixuithemesstylescss];
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, @radixuithemesstylescss];
         
 export function App() {
-  return /* @__PURE__ */ React.createElement(Flex, { direction: \\"column\\", gap: \\"2\\" }, /* @__PURE__ */ React.createElement(Text, null, \\"Hello from Radix Themes :)\\"), /* @__PURE__ */ React.createElement(Button, null, \\"xxx\\"));
+  return /* @__PURE__ */ jsxs(Flex, { direction: \\"column\\", gap: \\"2\\", children: [
+    /* @__PURE__ */ jsx(Text, { children: \\"Hello from Radix Themes :)\\" }),
+    /* @__PURE__ */ jsx(Button, { children: \\"xxx\\" })
+  ] });
 }
 ",
 }
@@ -17,10 +20,10 @@ export function App() {
 
 exports[`browserBundle > with files 1`] = `
 {
-  "code": "import React from 'https://esm.sh/react';
+  "code": "import { jsx } from 'https://esm.sh/react/jsx-runtime';
 import { render } from 'https://esm.sh/react-dom';
 import { Hello } from 'blob:nodedata:xxx';
-render(/* @__PURE__ */ React.createElement(Hello, null), document.getElementById(\\"root\\"));
+render(/* @__PURE__ */ jsx(Hello, {}), document.getElementById(\\"root\\"));
 ",
 }
 `;
