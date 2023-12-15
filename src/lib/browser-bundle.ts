@@ -1,5 +1,5 @@
 import * as esbuild from "esbuild-wasm";
-import replaceAsync from "string-replace-async";
+import { replaceAsync } from "./replace-async";
 
 export interface Options {
   compilerOptions?: esbuild.TsconfigRaw["compilerOptions"];

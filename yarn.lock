@@ -1112,7 +1112,6 @@ __metadata:
     esbuild-wasm: ^0.19.9
     react: ^18.2.0
     react-dom: ^18.2.0
-    string-replace-async: ^3.0.2
     typescript: ^5.1.6
     vite: ^4.4.9
     vitest: ^0.34.1
@@ -2500,13 +2499,6 @@ __metadata:
   version: 3.6.0
   resolution: "std-env@npm:3.6.0"
   checksum: ec344e93af17fd1b71eb28aeb4712f72790b9f2363981fc91ad1a91c9c7967c1ab89271819242d1b3bdbd57f10ac8ef0559d561ccf081a5377f9b3cd8c9b2259
-  languageName: node
-  linkType: hard
-
-"string-replace-async@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "string-replace-async@npm:3.0.2"
-  checksum: f7f239d255fa4246ddd376ebd9d47b9b82070e5f917bf35996c6e48f6509cf77a8bca330b60c120c473a76a69bf78b9e15c6dd4e417c304a22ebddabb8a2e5d8
   languageName: node
   linkType: hard
 
