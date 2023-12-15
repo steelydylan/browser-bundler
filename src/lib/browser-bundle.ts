@@ -109,7 +109,7 @@ async function initialize() {
     initializePromise = esbuild.initialize({
       // wasmModule: wasm,
       worker: false,
-      wasmURL: "https://esm.sh/esbuild-wasm@latest",
+      wasmURL: "https://esm.sh/esbuild-wasm@0.19.9/esbuild.wasm",
     });
   }
   return initializePromise;
