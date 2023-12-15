@@ -89,8 +89,8 @@ export async function transformCode(
         options,
         fileMapping
       );
-      if (resolvedPackageName.endsWith(".css")) {
-        const cssName = resolvedPackageName.replace(/[\.\/:-]/g, "").replace(/https?/, "");
+      if (packageName.endsWith(".css")) {
+        const cssName = packageName.replace(/[\.\/:-]/g, "").replace(/https?/, "");
         return `import ${cssName} from '${resolvedPackageName}' assert { type: "css" };
         
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ${cssName}];
