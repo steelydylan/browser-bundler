@@ -11,7 +11,10 @@ import "./style.css";
 render(<Hello />, document.getElementById("root"));
 `;
 
-const defaultHello = `import { lazy, Suspense } from "react";
+const defaultHello = `import { 
+  lazy, 
+  Suspense 
+} from "react";
 import "react-calendar/dist/Calendar.css";
 const LazyCalendar = lazy(() => import("react-calendar"));
 

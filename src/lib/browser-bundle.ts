@@ -75,7 +75,7 @@ export async function transformCode(
         fileMapping
       )}')`;
     })
-  return await replaceAsync(fixedText, /(\/\/\s*)?(import\s+)(.*\s+from\s+)?['"](.*)['"];?/g,
+  return await replaceAsync(fixedText, /(\/\/\s*)?(import\s+)([\s\S]*?\s+from\s+)?['"](.*)['"];?/g,
     async (
       raw,
       commentKey: string = "",
