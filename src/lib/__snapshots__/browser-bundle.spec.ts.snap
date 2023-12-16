@@ -15,6 +15,7 @@ export function App() {
   ] });
 }
 ",
+  "fileMapping": Map {},
 }
 `;
 
@@ -25,5 +26,8 @@ import { render } from 'https://esm.sh/react-dom';
 import { Hello } from 'blob:nodedata:xxx';
 render(/* @__PURE__ */ jsx(Hello, {}), document.getElementById(\\"root\\"));
 ",
+  "fileMapping": Map {
+    "./hello" => "blob:nodedata:xxx",
+  },
 }
 `;

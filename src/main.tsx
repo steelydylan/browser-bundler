@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { render } from "react-dom";
 import clsx from "clsx";
-import { browserBundle } from "./lib/browser-bundle";
+import { browserBundle, revokeAllFileMapping } from "./lib/browser-bundle";
 
 const defaultMain = `
 import { render } from "react-dom";
@@ -62,6 +62,7 @@ const App = () => {
   });
   const [tab, setTab] = useState<keyof typeof script>("main.tsx");
   const [srcDoc, setSrcDoc] = useState("");
+  const fileMappingRef = useRef<Map<string, string>>();
 
   useEffect(() => {
     browserBundle(script["main.tsx"], {
@@ -73,9 +74,16 @@ const App = () => {
       //   "react": "https://cdn.skypack.dev/react",
       //   "react-dom": "https://cdn.skypack.dev/react-dom",
       // }
-    }).then(({ code }) => {
+    }).then(({ code, fileMapping }) => {
       setSrcDoc(buildSrcDoc(script["index.html"], code));
+      fileMappingRef.current = fileMapping;
     });
+    return () => {
+      if (fileMappingRef.current) {
+        console.log(fileMappingRef.current)
+        revokeAllFileMapping(fileMappingRef.current);
+      }
+    };
   }, [script]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

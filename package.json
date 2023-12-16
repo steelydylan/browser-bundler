@@ -2,7 +2,7 @@
   "name": "browser-bundler",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",

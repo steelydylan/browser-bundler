@@ -32,7 +32,7 @@ export async function resolvePackage(
           fileMapping.set(packageName, blobUrl);
           return blobUrl;
         }
-        const code = await transformCode(file, options, fileMapping);
+        const { code } = await transformCode(file, options, fileMapping);
         const blob = new Blob([code], { type: "text/javascript" });
         const blobUrl = URL.createObjectURL(blob);
         fileMapping.set(packageName, blobUrl);
@@ -53,7 +53,10 @@ export async function transformCode(
   code: string,
   options: Options,
   fileMapping = new Map<string, string>()
-): Promise<string> {
+): Promise<{
+  code: string;
+  fileMapping: Map<string, string>;
+}> {
   const compilerOptions = {
     jsx: "react-jsx",
     target: "esnext",
@@ -75,7 +78,7 @@ export async function transformCode(
         fileMapping
       )}')`;
     })
-  return await replaceAsync(fixedText, /(\/\/\s*)?(import\s+)([\s\S]*?\s+from\s+)?['"](.*)['"];?/g,
+  const result = await replaceAsync(fixedText, /(\/\/\s*)?(import\s+)([\s\S]*?\s+from\s+)?['"](.*)['"];?/g,
     async (
       raw,
       commentKey: string = "",
@@ -100,6 +103,10 @@ export async function transformCode(
       }
     }
   );
+  return {
+    code: result,
+    fileMapping,
+  }
 }
 
 let initializePromise: Promise<void> | null = null;
@@ -120,9 +127,15 @@ export async function browserBundle(code: string, options: Options = {}) {
     await initialize();
   }
   try {
-    return { code: await transformCode(code, options) };
+    return await transformCode(code, options);
   } catch (e) {
     console.error(e);
     return { error: e };
+  }
+}
+
+export async function revokeAllFileMapping(fileMapping: Map<string, string>) {
+  for (const url of fileMapping.values()) {
+    URL.revokeObjectURL(url);
   }
 }
