@@ -18,7 +18,7 @@ export async function resolvePackage(
   options: Options,
   fileMapping: Map<string, string>
 ) {
-  if (packageName.startsWith(".")) {
+  if (packageName.startsWith(".") || packageName.startsWith("/")) {
     // import文をBlob URLから読み込むように変換する
     if (options.files) {
       const file = getMatchedFile(packageName, options.files);
