@@ -129,8 +129,11 @@ export async function browserBundle(code: string, options: Options = {}) {
   try {
     return await transformCode(code, options);
   } catch (e) {
-    console.error(e);
-    return { error: e };
+    return { 
+      code: '',
+      fileMapping: new Map<string, string>(),
+      error: e
+    };
   }
 }
 
