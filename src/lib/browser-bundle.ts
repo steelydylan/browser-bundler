@@ -62,15 +62,17 @@ export async function transformCode(
     target: "esnext",
     module: "esnext",
   } as const;
+
   const { code: outputText } = await esbuild.transform(code, {
     loader: "tsx",
     tsconfigRaw: {
       compilerOptions: {
         ...compilerOptions,
-        ...options,
+        ...options.compilerOptions,
       },
     },
   });
+
   const fixedText = await replaceAsync(outputText, /import\(['"](.+)['"]\)/g, async (_, packageName: string) => {
       return `import('${await resolvePackage(
         packageName,

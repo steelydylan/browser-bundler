@@ -15,12 +15,13 @@ const defaultHello = `import {
   lazy, 
   Suspense 
 } from "react";
+import { css } from "@emotion/react";
 import "react-calendar/dist/Calendar.css";
 const LazyCalendar = lazy(() => import("react-calendar"));
 
 export const Hello = () => {
   return (
-    <div className="text-center">
+    <div className="text-center" css={css\`color: red\`}>
       <h1 className="text-2xl font-bold">Hello, World!</h1>
       <p className="text-gray-500">This is a sample page.</p>
       <Suspense fallback={<div>Loading...</div>}>
@@ -69,6 +70,10 @@ const App = () => {
       files: {
         "./hello.tsx": script["hello.tsx"],
         "./style.css": styleCSS,
+      },
+      compilerOptions: {
+        jsx: "react-jsx",
+        jsxImportSource: "@emotion/react",
       },
       // importMap: {
       //   "react": "https://cdn.skypack.dev/react",
