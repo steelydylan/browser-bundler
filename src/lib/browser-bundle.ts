@@ -95,11 +95,13 @@ export async function transformCode(
         fileMapping
       );
       if (packageName.endsWith(".css")) {
-        const cssName = packageName.replace(/[\.\/:-]/g, "").replace(/https?/, "");
-        return `import ${cssName} from '${resolvedPackageName}' assert { type: "css" };
-        
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ${cssName}];
-        `;
+        return `(function () {
+          const css = document.createElement("link");
+          css.setAttribute("rel","stylesheet");
+          css.setAttribute("type","text/css");
+          css.setAttribute("href","${resolvedPackageName}");
+          document.getElementsByTagName("head")[0].appendChild(css);
+        }());`;
       } else {
         return `${importKey}${fromKey}'${resolvedPackageName}';`;
       }
