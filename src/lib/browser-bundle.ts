@@ -33,6 +33,10 @@ export async function resolvePackage(
           return blobUrl;
         }
         const { code } = await transformCode(file, options, fileMapping);
+        // transform中にfileMappingが更新されている可能性があるので再度確認する
+        if (fileMapping.has(packageName)) {
+          return fileMapping.get(packageName);
+        }
         const blob = new Blob([code], { type: "text/javascript" });
         const blobUrl = URL.createObjectURL(blob);
         fileMapping.set(packageName, blobUrl);
@@ -107,6 +111,7 @@ export async function transformCode(
       }
     }
   );
+  console.log(fileMapping)
   return {
     code: result,
     fileMapping,
