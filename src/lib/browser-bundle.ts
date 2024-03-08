@@ -111,7 +111,6 @@ export async function transformCode(
       }
     }
   );
-  console.log(fileMapping)
   return {
     code: result,
     fileMapping,
