@@ -18,10 +18,8 @@ jobs:
         with:
           node-version: 16.x
           registry-url: "https://npm.pkg.github.com"
-      - name: corepack
-        run: corepack enable
       - name: install
-        run: yarn --frozen-lockfile
+        run: npm install
       - name: version check
         run: BRANCH_NAME=$HEAD_BRANCH node ./utility/version-check.js
         env:
