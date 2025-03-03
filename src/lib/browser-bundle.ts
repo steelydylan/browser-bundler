@@ -5,6 +5,7 @@ export interface Options {
   compilerOptions?: esbuild.TsconfigRaw["compilerOptions"];
   files?: Record<string, string>;
   importMap?: Record<string, string>;
+  esbuildVersion?: string
 }
 
 export function getMatchedFile(path: string, files: Record<string, string>) {
@@ -78,12 +79,12 @@ export async function transformCode(
   });
 
   const fixedText = await replaceAsync(outputText, /import\(['"](.+)['"]\)/g, async (_, packageName: string) => {
-      return `import('${await resolvePackage(
-        packageName,
-        options,
-        fileMapping
-      )}')`;
-    })
+    return `import('${await resolvePackage(
+      packageName,
+      options,
+      fileMapping
+    )}')`;
+  })
   const result = await replaceAsync(fixedText, /(\/\/\s*)?(import\s+)([\s\S]*?\s+from\s+)?['"](.*)['"];?/g,
     async (
       raw,
@@ -119,12 +120,12 @@ export async function transformCode(
 
 let initializePromise: Promise<void> | null = null;
 
-async function initialize() {
+async function initialize({ esbuildVersion }: { esbuildVersion: string }) {
   if (!initializePromise) {
     initializePromise = esbuild.initialize({
       // wasmModule: wasm,
       worker: false,
-      wasmURL: "https://esm.sh/esbuild-wasm@0.19.9/esbuild.wasm",
+      wasmURL: `https://esm.sh/esbuild-wasm@${esbuildVersion}/esbuild.wasm`,
     });
   }
   return initializePromise;
@@ -132,12 +133,12 @@ async function initialize() {
 
 export async function browserBundle(code: string, options: Options = {}) {
   if (typeof window !== "undefined") {
-    await initialize();
+    await initialize({ esbuildVersion: options.esbuildVersion || "0.19.12" });
   }
   try {
     return await transformCode(code, options);
   } catch (e) {
-    return { 
+    return {
       code: '',
       fileMapping: new Map<string, string>(),
       error: e

@@ -29,6 +29,6 @@
   },
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "esbuild-wasm": "^0.19.9"
+    "esbuild-wasm": "0.19.12"
   }
 }
