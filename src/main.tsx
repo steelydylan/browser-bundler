@@ -4,11 +4,12 @@ import clsx from "clsx";
 import { browserBundle, revokeAllFileMapping } from "./lib/browser-bundle";
 
 const defaultMain = `
-import { render } from "react-dom";
-import { Hello } from "./hello";
+import { createRoot } from "react-dom/client";
+import { Hello } from "@/hello";
 import "./style.css";
 
-render(<Hello />, document.getElementById("root"));
+const root = createRoot(document.getElementById("root"));
+root.render(<Hello />);
 `;
 
 const defaultHello = `import { 
@@ -67,8 +68,11 @@ const App = () => {
 
   useEffect(() => {
     browserBundle(script["main.tsx"], {
+      alias: {
+        "@/*": "./src/*",
+      },
       files: {
-        "./hello.tsx": script["hello.tsx"],
+        "./src/hello.tsx": script["hello.tsx"],
         "./style.css": styleCSS,
       },
       compilerOptions: {

@@ -6,6 +6,7 @@ export interface Options {
   files?: Record<string, string>;
   importMap?: Record<string, string>;
   esbuildVersion?: string
+  alias?: Record<string, string> // { "@/*": "./src/*" }
 }
 
 export function getMatchedFile(path: string, files: Record<string, string>) {
@@ -19,6 +20,19 @@ export async function resolvePackage(
   options: Options,
   fileMapping: Map<string, string>
 ) {
+  // エイリアスの処理
+  if (options.alias) {
+    for (const [alias, target] of Object.entries(options.alias)) {
+      const regex = new RegExp(`^${alias.replace(/\*/g, '.*')}`);
+      if (regex.test(packageName)) {
+        const matched = packageName.match(regex);
+        // マッチした部分を取り出し、targetに置き換える
+        const matchedPath = matched?.[0].replace(alias.replace(/\*/g, ''), ''); // エイリアス部分を取り除く
+        packageName = target.replace(/\*/g, matchedPath || "");
+        break;
+      }
+    }
+  }
   if (packageName.startsWith(".") || packageName.startsWith("/")) {
     // import文をBlob URLから読み込むように変換する
     if (options.files) {
